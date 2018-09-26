@@ -9,7 +9,7 @@ public class IOController {
     }
 
     public void getCommand(){
-        CommondHandle.checkCommond(sc.nextLine());
+        CmdHandle.checkCmd(sc.nextLine());
     }
 
     public void setSc(Scanner sc) {

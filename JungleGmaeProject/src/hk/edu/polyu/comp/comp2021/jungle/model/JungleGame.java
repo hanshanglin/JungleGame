@@ -16,6 +16,8 @@ public class JungleGame {
         checkerBoard.printBoard();
     }
 
+
+
     public void win(int i){
         /** player i is win*/
     }
