@@ -8,7 +8,7 @@ public class JungleGame {
     public JungleGame(){}
     public void gameSetUp(){
         Scanner sc = new Scanner(System.in);
-        IOController io = new IOController(sc);
+        InputController io = new InputController(sc);
         io.getCommand();
     }
     public void newGame(){

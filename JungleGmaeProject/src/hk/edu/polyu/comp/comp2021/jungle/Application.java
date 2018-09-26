@@ -1,7 +1,6 @@
 package hk.edu.polyu.comp.comp2021.jungle;
 
 import hk.edu.polyu.comp.comp2021.jungle.model.JungleGame;
-import hk.edu.polyu.comp.comp2021.jungle.model.IOController;
 
 public class Application {
 

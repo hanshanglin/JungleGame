@@ -12,11 +12,10 @@ public class Rat extends Piece{
         }
     }
 
+    @Override
     public boolean checkMove(int x, int y){
         /**check movement*/
-        if (Math.abs(x-this.position[0])==1){
 
-        }
         /**check water*/
 
         /**check traps*/

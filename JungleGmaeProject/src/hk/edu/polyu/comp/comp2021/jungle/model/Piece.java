@@ -30,4 +30,7 @@ public class Piece {
     private void updatePosition(@NotNull int[] newPosition){
         position = newPosition.clone();
     }
+    public boolean checkMove(int x, int y){
+        return false;
+    }
 }
