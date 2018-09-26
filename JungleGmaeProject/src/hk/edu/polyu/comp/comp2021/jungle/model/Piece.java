@@ -16,9 +16,12 @@ public class Piece {
 
     protected int rank;
     protected int[] position={0,0};
+    protected int owner;
 
-    public Piece(int rank){
+    public Piece(int rank,int owner){
+
         this.rank = rank;
+        this.owner = owner;
     }
 
     public int[] getPosition(){
