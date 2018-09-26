@@ -14,19 +14,26 @@ public class CheckerBoard {
             {0,0,0,-1,0,0,0},
             {0,0,-1,-10,-1,0,0},
     };
+
     final private int X = board[0].length;
     final private int Y = board.length;
 
-    public void printBoard(){
+    private Piece[][] pieceBoard= new Piece[Y][X];
+    public void changePiece(int x1,int y1,int x2,int y2){
 
-        for (int i = 0; i < 9; i++) {
-
-        }
-        for (int i = 0;i<Y;i++) {
-            System.out.println(Arrays.toString(board[i]));
-        }
     }
 
+    public void printBoard(){
+
+
+    }
+    public void newPieceBoard(){
+
+    }
+
+    public void loadPieceBoard(){
+
+    }
     public int getBoard(int x, int y){
         return board[x][y];
     }

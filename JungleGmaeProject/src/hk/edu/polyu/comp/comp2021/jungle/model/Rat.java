@@ -1,10 +1,12 @@
 package hk.edu.polyu.comp.comp2021.jungle.model;
 
 public class Rat extends Piece{
-    public Rat(int rank) {
-        super(rank);
+
+    public Rat(int rank, int owner) {
+        super(rank, owner);
     }
-    public boolean checkMove(int x,int y){
+
+    public boolean checkMove(int x, int y){
         /**check movement*/
         if (Math.abs(x-this.position[0])==1){
 
