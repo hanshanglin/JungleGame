@@ -15,22 +15,49 @@ public class Piece {
      * 1 Rat */
 
     protected int rank;
-    protected int[] position={0,0};
+    protected int x=0;
+    protected int y=0;
     protected int owner;
 
-    public Piece(int rank,int owner){
+    public Piece(int owner){
 
-        this.rank = rank;
+
         this.owner = owner;
     }
 
-    public int[] getPosition(){
-        return position;
+    public int getX() {
+        return x;
     }
-    private void updatePosition(@NotNull int[] newPosition){
-        position = newPosition.clone();
+    public int getY(){
+        return y;
     }
-    public boolean checkMove(int x, int y){
+
+    public void setPos(int x,int y){
+        this.x = x;
+        this.y = y;
+    }
+
+
+    public boolean checkMove(int x, int y,int[][] map,Piece[][] pieces)throws Exception{
+        /**check movement*/
+        int nowX = this.getX();
+        int nowY = this.getY();
+        if(x==nowX && y == nowY) throw new Exception("the piece should move");
+        if(Math.abs(x-nowX)+Math.abs(y-nowY) > 1) throw new Exception("the piece can't move in that way");
+        if(map[y][x] == -10) throw new Exception("the piece can't move in that way"); // can't go into water
+        if (pieces[y][x] == null)return true; // no enemy
+        if (pieces[y][x].owner == owner) throw new Exception("the piece can't attack friend");
+
+        if(map[y][x] == -1){ // enemy in trap
+            map[y][x] = 0;
+            return true;
+        }
+        if(pieces[y][x].rank >= rank) return true;
         return false;
+    }
+
+    private void update(int x, int y){
+        this.x = x;
+        this.y = y;
     }
 }

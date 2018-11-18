@@ -1,11 +1,17 @@
 package hk.edu.polyu.comp.comp2021.jungle.model;
 
+import java.io.File;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class Controller {
     /**state 0: no game
      * state 1: single pc game
      * state 2: online pc game
+     Welcome to the JungleGame, you can choose following command:
+     NEW:	to create a new game
+     OPEN [path]:	to open a exist game
+     NEW
      * */
     private int state = 0;
     private Scanner sc;
@@ -14,74 +20,188 @@ public class Controller {
 
     public Controller(){
         this.sc = new Scanner(System.in);
-        this.game = new JungleGame();
-        this.view = new Displayer(game);
     }
 
+
     private String getCommand(){
+        return sc.nextLine().trim();
+    }
+
+    private String getName(){
         return sc.nextLine();
     }
 
     public void gameSetUp(){
         /**
          * ask for game choice*/
-        Displayer.messageDisplay("Welcome to the JungleGame, you can choose following command:");
-        Displayer.messageDisplay("NEW:\tto crate a new game");
-        Displayer.messageDisplay("OPEN [path]:\tto open a exist game");
+        Displayer.messageDisplay("Welcome to the JungleGame, you can choose following command:\n");
+        Displayer.messageDisplay("STANDALONE:\tplay the game on this PC\n");
+        Displayer.messageDisplay("ONLINE:\tplay the game on two PC\n");
+        while(state == 0){
+            cmdParsing(getCommand());
+        }
+        if(state == 1){
+            singleGameSetUp();
+            return;
+        }
+        else{
+            onlineGameSetUp();
+        }
         cmdParsing(getCommand());
     }
 
-
-    public static void cmdParsing(String cmd){
-
-        /**gameState :  0 for no game playing now, cmd can be "NEW" "OPEN"
-         *              1 for a game is playing, cmd can be "NEW" "OPEN" "Online" ->need to remind save the game
-         *                                          or can be "MOVE"  "SAVE"
-         *
-         *
-         * just for test ,will change to regex */
-
-        cmd = cmd.toUpperCase();
-        cmd = cmd.trim();
-        if (cmd.equals("NEW")) crateHandle();
-        else{
-            String[] temp = cmd.split(" ");
-            if (temp[0]=="OPEN") openHandle(temp[1]);
-            else if(temp[0]=="SAVE") saveHandle(temp[1]);
-            else if(temp[0]=="MOVE") moveHandle(temp[1].charAt(1)-'A',temp[1].charAt(0),temp[2].charAt(1)-'A',temp[1].charAt(0));
-        }
-
-
+    private void singleGameSetUp(){
+        Displayer.messageDisplay("NEW:\tto open a new game\n");
+        Displayer.messageDisplay("OPEN [path]:\tto open a exist game\n");
+        cmdParsing(getCommand());
     }
-    private static void saveHandle(String path){
+
+    private void onlineGameSetUp(){}
+
+    public void game(){
+        while(true){
+            if(state == 1){//single PC
+
+            }
+            if(state == 2){//multi PC
+
+            }
+        }
+    }
+
+
+    /**
+     * use for game, keep doing round
+     */
+    public void doRound(){
+        while(game.isEnd()!= true && state!=0){
+            view.turnMsgDisplay();
+            cmdParsing(getCommand());
+            view.boardDisplay();
+        }
+        view.winnerDisplay();
+    }
+
+    /**
+     * parsing the user's input
+     *
+     * @param cmd the user's input
+     */
+    public void cmdParsing(String cmd){
+        StringTokenizer token = new StringTokenizer(cmd," ");
+        String temp = token.nextToken();
+        if (state == 0){
+            if (temp.toUpperCase().equals("STANDALONE")) {
+                state = 1;
+                return;
+            }
+            if (temp.toUpperCase().equals("ONLINE")){
+                state = 2;
+                return;
+            }
+            Displayer.messageDisplay("please enter STANDALONE or ONLINE to select game mode.\n");
+            return;
+        }
+        try {
+            if (temp.toUpperCase().equals("NEW"))
+            createHandle();
+            else{
+                if (temp.toUpperCase().equals("OPEN")) openHandle(token.nextToken());
+                else if (temp.toUpperCase().equals("SAVE")) saveHandle(token.nextToken());
+                else if (temp.toUpperCase().equals("MOVE"))
+                    moveHandle(token.nextToken().toUpperCase(),token.nextToken().toUpperCase());
+            }
+        }
+        catch (Exception e) {cmdParsing(getCommand());}
+    }
+
+    /**
+     * save game
+     *
+     * @param path
+     * @throws Exception
+     */
+    private void saveHandle(String path){
         /**
          * if path didn't exist, print error message and ask another command
          * if exist, call save function
          * */
-
-    }
-    private static void crateHandle(){
-        /**
-         * if a game has existed, ask user if need to save(Y/N)
-         *  if Y, ask for a path, call saveHandle
-         * else open a new game
-         * */
-
-    }
-    private static void openHandle(String path){
-        /**
-         * if path didn't exist, print error message and ask another command
-         * else load the game
-         * */
-
-    }
-    private static boolean moveHandle(int x1,int y1,int x2,int y2){
-        /**
-         * check if move is allow,
-         * if allow refresh the output
-         * else ask another command
-         * */
-        return false;
+        game.saveGame(path);
     }
 
+    /**
+     * create a new game
+     */
+    private void createHandle(){
+        if(state!=0 && game!=null){
+            Displayer.messageDisplay("A game is existing now, please save it first, if you do not want to save, please input \"Y\"\n");
+            if(!getCommand().equals("Y")){
+                Displayer.messageDisplay("You give up to create new game, now you can back to game\n");
+                return;
+            }
+        }
+
+        this.game = new JungleGame();
+        this.view = new Displayer(game);
+
+        game.newGame();
+        Displayer.messageDisplay("please enter the player1 's name:\n");
+        game.getPlayer(0).setName(getName());
+        Displayer.messageDisplay("please enter the player2 's name:\n");
+        game.getPlayer(1).setName(getName());
+
+        view.boardDisplay();
+        doRound();
+    }
+
+    /**
+     * @param path
+     * @throws Exception if file not exists
+     */
+    private void openHandle(String path)throws Exception{
+        if(state!=0 && game!=null){
+            Displayer.messageDisplay("A game is existing now, please save it first, if you do not want to save, please input \"Y\"\n");
+            if(!getCommand().equals("Y")){
+                Displayer.messageDisplay("You give up to create new game, now you can back to game\n");
+                return;
+            }
+        }
+        File file = new File(path);
+        if(!file.exists()){
+            throw new Exception("ERROR: file not exists");
+        }
+        this.game = new JungleGame();
+        this.view = new Displayer(game);
+        game.openGame(file);
+        view.boardDisplay();
+        doRound();
+    }
+
+    /**
+     *
+     * @param pos1 the first position input as "A1"
+     * @param pos2 the second position input as "A1"
+     * @return boolean if the no error return true
+     * @throws Exception if move is invalid
+     */
+    private boolean moveHandle (String pos1,String pos2)throws Exception{
+        if(game == null)throw new Exception("No game exits now.\n");
+        int x = pos1.charAt(0)-'A';
+        int y = pos1.charAt(1)-'1';
+        int newX = pos2.charAt(0)-'A';
+        int newY = pos2.charAt(1)-'1';
+        if (x<0 || x>6 || y<0 || y>9){
+            throw new Exception("position 1 invalid");
+        }
+        if (newX<0 || newX>6 || newY<0 || newY>9){
+            throw new Exception("position 2 invalid");
+        }
+        try{
+            game.move(x,y,newX,newY);
+        }
+        catch (Exception e){
+            Displayer.messageDisplay(e.getMessage());
+        }
+        return true;
+    }
 }
