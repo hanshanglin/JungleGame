@@ -20,12 +20,12 @@ public class Displayer {
                     System.out.print("\t");
                 }
                 else{
-                    if(pb[i][j].owner == 0){
-                        System.out.print((char)('A'+pb[i][j].rank-1));
+                    if(pb[i][j].getOwner() == 0){
+                        System.out.print((char)('A'+pb[i][j].getRank()-1));
                         System.out.print("\t");
                     }
                     else{
-                        System.out.print((char)('a'+pb[i][j].rank-1));
+                        System.out.print((char)('a'+pb[i][j].getRank()-1));
                         System.out.print("\t");
                     }
                 }

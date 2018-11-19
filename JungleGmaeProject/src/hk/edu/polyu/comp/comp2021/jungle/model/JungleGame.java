@@ -1,20 +1,27 @@
 package hk.edu.polyu.comp.comp2021.jungle.model;
 
 
-import org.jetbrains.annotations.Nullable;
+import com.sun.istack.internal.Nullable;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.StringTokenizer;
 
+/**
+ * main control the game cycle
+ */
 public class JungleGame {
+    /** CheckerBoard cb: record piece information and movement  */
     private CheckerBoard cb;
+    /** currentTurn : record the current turn. 0 means player0's turn, 1 means player1's turn*/
     private int currentTurn;
+    /**  */
     private Player p0;
     private Player p1;
     private boolean end;
+
     @Nullable
-    private Player winner;
+    private Player winner = null;
     // 0 for user 0, 1 for user 1
 
     public JungleGame(){
@@ -22,7 +29,6 @@ public class JungleGame {
         this.cb = new CheckerBoard();
         this.p0 = new Player(0);
         this.p1 = new Player(1);
-        winner = null;
     }
 
     public void newGame(){
@@ -68,7 +74,7 @@ public class JungleGame {
             for(int i = 0;i<9;i++){
                 for (int j = 0; j < 7; j++) {
                     if (pieceMap[i][j]!=null){
-                        writer.write(String.valueOf(i)+" "+String.valueOf(j)+" "+String.valueOf(pieceMap[i][j].rank)+" "+String.valueOf(pieceMap[i][j].owner));
+                        writer.write(String.valueOf(i)+" "+String.valueOf(j)+" "+String.valueOf(pieceMap[i][j].getRank())+" "+String.valueOf(pieceMap[i][j].getOwner()));
                         writer.write("\r\n");
                     }
                 }
@@ -163,7 +169,7 @@ public class JungleGame {
         if (cb.getPiece(x1,y1)==null){
             throw new Exception("piece not exits");
         }
-        if (cb.getPiece(x1,y1).owner != currentTurn){
+        if (cb.getPiece(x1,y1).getOwner() != currentTurn){
             throw new Exception("you can not move other's piece");
         }
         try{
@@ -176,7 +182,6 @@ public class JungleGame {
         finally {
             checkWinner();
         }
-
         return true;
     }
 
@@ -189,11 +194,11 @@ public class JungleGame {
     }
 
     private void checkWinner(){
-        if(cb.getPiece(3,0)!=null && cb.getPiece(3,0).owner!=1){
+        if(cb.getPiece(3,0)!=null && cb.getPiece(3,0).getOwner()!=1){
             end = true;
             winner = p1;
         }
-        if(cb.getPiece(3,8)!=null && cb.getPiece(3,8).owner!=0){
+        if(cb.getPiece(3,8)!=null && cb.getPiece(3,8).getOwner()!=0){
             end = true;
             winner = p0;
         }
