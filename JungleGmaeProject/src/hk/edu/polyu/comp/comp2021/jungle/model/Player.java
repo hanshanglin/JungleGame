@@ -2,7 +2,7 @@ package hk.edu.polyu.comp.comp2021.jungle.model;
 
 public class Player {
     private int playerID;
-    private int[] pieceList;
+    private String name;
 
     public Player(int id){
         this.playerID = id;
@@ -10,8 +10,12 @@ public class Player {
     public int getPlayerID(){
         return playerID;
     }
-    public int[] getPieceList() {
-        return pieceList;
+
+    public void setName(String name) {
+        this.name = name;
     }
 
+    public String getName() {
+        return name;
+    }
 }
