@@ -32,8 +32,8 @@ public class Controller {
     }
 
     public void gameSetUp(){
-        /**
-         * ask for game choice*/
+        /*
+          ask for game choice*/
         Displayer.messageDisplay("Welcome to the JungleGame, you can choose following command:\n");
         Displayer.messageDisplay("STANDALONE:\tplay the game on this PC\n");
         Displayer.messageDisplay("ONLINE:\tplay the game on two PC\n");
@@ -45,7 +45,7 @@ public class Controller {
             return;
         }
         else{
-            onlineGameSetUp();
+            //onlineGameSetUp();
         }
         cmdParsing(getCommand());
     }
@@ -56,7 +56,6 @@ public class Controller {
         cmdParsing(getCommand());
     }
 
-    private void onlineGameSetUp(){}
 
 
 
@@ -64,7 +63,7 @@ public class Controller {
      * use for game, keep doing round
      */
     public void doRound(){
-        while(game.isEnd()!= true && state!=0){
+        while(!game.isEnd() && state!=0){
             view.turnMsgDisplay();
             cmdParsing(getCommand());
             view.boardDisplay();
@@ -112,10 +111,10 @@ public class Controller {
      * @throws Exception
      */
     private void saveHandle(String path){
-        /**
-         * if path didn't exist, print error message and ask another command
-         * if exist, call save function
-         * */
+        /*
+          if path didn't exist, print error message and ask another command
+          if exist, call save function
+          */
         game.saveGame(path);
     }
 

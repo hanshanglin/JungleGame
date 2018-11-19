@@ -1,6 +1,14 @@
 package hk.edu.polyu.comp.comp2021.jungle.model;
 
+/**
+ * extends from Piece
+ * Lion: rank 7 | can jump over the water
+ */
 public class Lion extends Piece {
+    /**
+     * init: for player1 [6,0], for player2 [0,8]
+     * @param owner 0 for player1, 1 for player2
+     */
     public Lion(int owner) {
         super(owner);
         if(owner == 0){
@@ -13,8 +21,9 @@ public class Lion extends Piece {
         }
         this.rank = 7;
     }
-    public boolean checkMove(int x, int y,int[][] map,Piece[][] pieces)throws Exception{
-        /**check movement*/
+    @Override
+    public boolean checkMove(int x, int y, int[][] map, Piece[][] pieces)throws Exception{
+        /*check movement*/
         int nowX = this.getX();
         int nowY = this.getY();
         if(x==nowX && y == nowY) throw new Exception("the piece should move");
@@ -48,13 +57,12 @@ public class Lion extends Piece {
         }
         if(map[y][x] == -10) throw new Exception("the piece can't move in that way"); // can't go into water
         if (pieces[y][x] == null)return true; // no enemy
-        if (pieces[y][x].owner == owner) throw new Exception("the piece can't attack friend");
+        if (pieces[y][x].getOwner() == owner) throw new Exception("the piece can't attack friend");
 
         if(map[y][x] == -1){ // enemy in trap
             map[y][x] = 0;
             return true;
         }
-        if(pieces[y][x].rank >= rank) return true;
-        return false;
+        return pieces[y][x].getRank() >= rank;
     }
 }

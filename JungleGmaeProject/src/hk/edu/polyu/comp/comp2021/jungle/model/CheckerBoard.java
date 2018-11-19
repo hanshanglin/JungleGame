@@ -4,6 +4,7 @@ package hk.edu.polyu.comp.comp2021.jungle.model;
 public class CheckerBoard {
     private int[][] board;
     private Piece[][] pieceBoard;
+    private final static Piece NULLPIECE = null;
     private int X;
     private int Y;
 
@@ -20,13 +21,13 @@ public class CheckerBoard {
 
     public boolean movePiece(int x1, int y1, int x2, int y2)throws Exception{
 
-        /**if can't move return false/
-         * if can move, do move and return true
+        /*if can't move return false
+          if can move, do move and return true
          */
         try {
             pieceBoard[y1][x1].checkMove(x2,y2,board,pieceBoard);
             pieceBoard[y2][x2] = pieceBoard[y1][x1];
-            pieceBoard[y1][x1] = null;
+            pieceBoard[y1][x1] = NULLPIECE;
             pieceBoard[y2][x2].setPos(x2,y2);
         }
         catch (Exception e) {throw e;}
@@ -49,17 +50,17 @@ public class CheckerBoard {
 
 
     public void newPieceBoard(){
-        /**set original PieceBoard
-         * */
-        /**
-         * 8 Elephant
-         * 7 Lion
-         * 6 Tiger
-         * 5 Leopard
-         * 4 Wolf
-         * 3 Dog
-         * 2 Cat
-         * 1 Rat */
+        /*set original PieceBoard
+         */
+        /*
+          8 Elephant
+          7 Lion
+          6 Tiger
+          5 Leopard
+          4 Wolf
+          3 Dog
+          2 Cat
+          1 Rat */
         pieceBoard = new Piece[9][7];
         Rat p1 = new Rat(0);
         Rat p2 = new Rat(1);

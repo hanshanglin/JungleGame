@@ -1,41 +1,73 @@
 package hk.edu.polyu.comp.comp2021.jungle.model;
 
-
-import org.jetbrains.annotations.NotNull;
-
+/**
+ * super class of all type of Piece
+ */
 public class Piece {
-    /**
-     * 8 Elephant
-     * 7 Lion
-     * 6 Tiger
-     * 5 Leopard
-     * 4 Wolf
-     * 3 Dog
-     * 2 Cat
-     * 1 Rat */
-
-    public int rank;
+    /** rank: level */
+    protected int rank;
+    /** x: the col of the piece */
     protected int x=0;
+    /** y: the row of the piece */
     protected int y=0;
-    public int owner;
+    /** owner: the owner of the piece, 0 is belong to player0, 1 is belong to player1 */
+    protected int owner;
 
+    /**
+     * constructor
+     * @param owner the owner of the piece
+     */
     public Piece(int owner){
         this.owner = owner;
     }
 
+    /**
+     * @return rank
+     */
+    public int getRank(){
+        return rank;
+    }
+
+    /**
+     * @return owner
+     */
+    public int getOwner(){
+        return owner;
+    }
+
+    /**
+     * @return x
+     */
     public int getX() {
         return x;
     }
+
+    /**
+     * @return y
+     */
     public int getY(){
         return y;
     }
 
+    /**
+     *
+     * @param x col
+     * @param y row
+     */
     public void setPos(int x,int y){
         this.x = x;
         this.y = y;
     }
 
-
+    /**
+     *
+     * @param x target col
+     * @param y target row
+     * @param map board map
+     * @param pieces position of pieces
+     * @return true if move is valid
+     * @throws Exception if move is invalid
+     */
     public boolean checkMove(int x, int y,int[][] map,Piece[][] pieces)throws Exception{
         /**check movement*/
         int nowX = this.getX();
@@ -44,18 +76,13 @@ public class Piece {
         if(Math.abs(x-nowX)+Math.abs(y-nowY) > 1) throw new Exception("the piece can't move in that way");
         if(map[y][x] == -10) throw new Exception("the piece can't move in that way"); // can't go into water
         if (pieces[y][x] == null)return true; // no enemy
-        if (pieces[y][x].owner == owner) throw new Exception("the piece can't attack friend");
+        if (pieces[y][x].getOwner() == owner) throw new Exception("the piece can't attack friend");
 
         if(map[y][x] == -1){ // enemy in trap
             map[y][x] = 0;
             return true;
         }
-        if(pieces[y][x].rank >= rank) return true;
-        return false;
+        return pieces[y][x].getRank() >= rank;
     }
 
-    private void update(int x, int y){
-        this.x = x;
-        this.y = y;
-    }
 }
