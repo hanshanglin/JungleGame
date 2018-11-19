@@ -14,14 +14,12 @@ public class Piece {
      * 2 Cat
      * 1 Rat */
 
-    protected int rank;
+    public int rank;
     protected int x=0;
     protected int y=0;
-    protected int owner;
+    public int owner;
 
     public Piece(int owner){
-
-
         this.owner = owner;
     }
 
