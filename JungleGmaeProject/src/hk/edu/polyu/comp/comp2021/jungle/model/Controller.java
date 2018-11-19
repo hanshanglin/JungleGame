@@ -58,16 +58,6 @@ public class Controller {
 
     private void onlineGameSetUp(){}
 
-    public void game(){
-        while(true){
-            if(state == 1){//single PC
-
-            }
-            if(state == 2){//multi PC
-
-            }
-        }
-    }
 
 
     /**

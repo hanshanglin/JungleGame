@@ -1,6 +1,8 @@
 package hk.edu.polyu.comp.comp2021.jungle.model;
 
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.StringTokenizer;
@@ -11,6 +13,7 @@ public class JungleGame {
     private Player p0;
     private Player p1;
     private boolean end;
+    @Nullable
     private Player winner;
     // 0 for user 0, 1 for user 1
 
@@ -151,6 +154,7 @@ public class JungleGame {
 
     }
 
+    @Nullable
     public Player getWinner() {
         return winner;
     }

@@ -2,7 +2,10 @@ package hk.edu.polyu.comp.comp2021.jungle.model;
 
 public class Elephant extends Piece {
 
-
+    /**
+     * init: for player1 [0,2], for player2 [6,6]
+     * @param owner 0 for player1, 1 for player2
+     */
     public Elephant(int owner) {
         super(owner);
         if(owner == 0){
