@@ -41,7 +41,7 @@ public class Controller {
           ask for game choice*/
         Displayer.messageDisplay("Welcome to the JungleGame, you can choose following command:\n");
         Displayer.messageDisplay("STANDALONE:\tplay the game on this PC\n");
-        Displayer.messageDisplay("ONLINE:\tplay the game on two PC\n");
+        //Displayer.messageDisplay("ONLINE:\tplay the game on two PC\n");
         while(state == 0){
             cmdParsing(getCommand());
         }
@@ -90,10 +90,10 @@ public class Controller {
                 state = 1;
                 return;
             }
-            if (temp.toUpperCase().equals("ONLINE")){
+            /*if (temp.toUpperCase().equals("ONLINE")){
                 state = 2;
                 return;
-            }
+            }*/
             Displayer.messageDisplay("please enter STANDALONE or ONLINE to select game mode.\n");
             return;
         }
@@ -129,7 +129,7 @@ public class Controller {
      */
     private void createHandle(){
         if(state!=0 && game!=null){
-            Displayer.messageDisplay("A game is existing now, please save it first, if you do not want to save, please input \"Y\"\n");
+            Displayer.messageDisplay("A game is existing now,please ensure you have save the game or you will lose the game,if you are sure to have a new game please input \"Y\"\n");
             if(!getCommand().equals("Y")){
                 Displayer.messageDisplay("You give up to create new game, now you can back to game\n");
                 return;
@@ -155,7 +155,7 @@ public class Controller {
      */
     private void openHandle(String path)throws Exception{
         if(state!=0 && game!=null){
-            Displayer.messageDisplay("A game is existing now, please save it first, if you do not want to save, please input \"Y\"\n");
+            Displayer.messageDisplay("A game is existing now,please ensure you have save the game or you will lose the game,if you are sure to have a new game please input \"Y\"\n");
             if(!getCommand().equals("Y")){
                 Displayer.messageDisplay("You give up to create new game, now you can back to game\n");
                 return;
