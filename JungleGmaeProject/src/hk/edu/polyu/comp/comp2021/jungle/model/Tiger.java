@@ -53,7 +53,7 @@ public class Tiger extends Piece {
                     }
                 }
             }
-            throw new Exception("the piece can't move in that way");
+            return true;
         }
         if(map[y][x] == -10) throw new Exception("the piece can't move in that way"); // can't go into water
         if (pieces[y][x] == null)return true; // no enemy
