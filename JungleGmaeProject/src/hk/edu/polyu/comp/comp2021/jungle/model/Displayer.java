@@ -54,8 +54,9 @@ public class Displayer {
      * display the winner
      */
     public void winnerDisplay(){
-        System.out.print("the WINNER is :");
-        System.out.print(game.getWinner().getName());
+        String s="the WINNER is :"+game.getWinner().getName()+" !";
+        System.out.println(s);
+        UIController.instance.sendEvent(UIEvent.UI_INFO,s);
     }
 
     /**

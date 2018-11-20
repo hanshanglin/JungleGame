@@ -83,5 +83,10 @@ public class Piece {
         }
         return pieces[y][x].getRank() >= rank;
     }
+    
+    @Override
+    public String toString(){
+        return Character.toString((char)((this.owner==0?'A':'a')+this.rank-1));
+    }
 
 }
