@@ -2,8 +2,10 @@ package hk.edu.polyu.comp.comp2021.jungle.model;
 
 import org.jetbrains.annotations.NotNull;
 
+import hk.edu.polyu.comp.comp2021.jungle.ui.UIController;
+import hk.edu.polyu.comp.comp2021.jungle.ui.UIEvent;
+
 import java.io.File;
-import java.util.Scanner;
 import java.util.StringTokenizer;
 
 /**
@@ -12,25 +14,28 @@ import java.util.StringTokenizer;
 public class Controller {
 
     private int state = 0;
-    private Scanner sc;
     private Displayer view;
     private JungleGame game;
 
     /**
-     * construction
+     *  get the checker board for current game
+     * @return the checker board
      */
-    public Controller(){
-        this.sc = new Scanner(System.in);
-    }
-
-
+    public CheckerBoard getCheckerBoard(){return game.getCheckerBoard();}
+    
+    /**
+     *  get the current game
+     * @return the game
+     */
+    public JungleGame getGame(){return this.game;}
+    
     @NotNull
     private String getCommand(){
-        return sc.nextLine().trim();
+        return HybridScanner.instance.nextLine().trim();
     }
 
     private String getName(){
-        return sc.nextLine();
+        return HybridScanner.instance.nextLine();
     }
 
     /**
@@ -42,6 +47,7 @@ public class Controller {
         Displayer.messageDisplay("Welcome to the JungleGame, you can choose following command:\n");
         Displayer.messageDisplay("STANDALONE:\tplay the game on this PC\n");
         //Displayer.messageDisplay("ONLINE:\tplay the game on two PC\n");
+        UIController.instance.sendEvent(UIEvent.GAME_MODE_SELECT);
         while(state == 0){
             cmdParsing(getCommand());
         }
@@ -57,6 +63,7 @@ public class Controller {
 
 
     private void singleGameSetUp(){
+        UIController.instance.sendEvent(UIEvent.GAME_SINGLE_PLAYER);
         Displayer.messageDisplay("NEW:\tto open a new game\n");
         Displayer.messageDisplay("OPEN [path]:\tto open a exist game\n");
         cmdParsing(getCommand());
@@ -71,6 +78,7 @@ public class Controller {
     public void doRound(){
         while(!game.isEnd() && state!=0){
             view.turnMsgDisplay();
+            UIController.instance.sendEvent(UIEvent.GAME_SWAP_TURN);
             cmdParsing(getCommand());
             view.boardDisplay();
         }
@@ -105,9 +113,13 @@ public class Controller {
                 else if (temp.toUpperCase().equals("SAVE")) saveHandle(token.nextToken());
                 else if (temp.toUpperCase().equals("MOVE"))
                     moveHandle(token.nextToken().toUpperCase(),token.nextToken().toUpperCase());
+                else cmdParsing(getCommand());
             }
         }
-        catch (Exception e) {cmdParsing(getCommand());}
+        catch (Exception e) {
+            UIController.instance.sendEvent(UIEvent.UI_ERROR_REPORT,e.getMessage());
+            cmdParsing(getCommand());
+        }
     }
 
     /**
@@ -122,6 +134,7 @@ public class Controller {
           if exist, call save function
           */
         game.saveGame(path);
+        UIController.instance.sendEvent(UIEvent.UI_INFO,"Game saved to "+path);
     }
 
     /**
@@ -146,6 +159,7 @@ public class Controller {
         game.getPlayer(1).setName(getName());
 
         view.boardDisplay();
+        UIController.instance.sendEvent(UIEvent.GAME_INITIATED);
         doRound();
     }
 
@@ -169,6 +183,7 @@ public class Controller {
         this.view = new Displayer(game);
         game.openGame(file);
         view.boardDisplay();
+        UIController.instance.sendEvent(UIEvent.GAME_INITIATED);
         doRound();
     }
 
@@ -193,9 +208,11 @@ public class Controller {
         }
         try{
             game.move(x,y,newX,newY);
+            UIController.instance.sendEvent(UIEvent.UI_BOARD_UPDATE);
         }
         catch (Exception e){
             Displayer.messageDisplay(e.getMessage());
+            UIController.instance.sendEvent(UIEvent.UI_COMMAND_REJECTED,e.getMessage());
         }
         return true;
     }
