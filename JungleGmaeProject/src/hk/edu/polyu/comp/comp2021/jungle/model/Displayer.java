@@ -1,12 +1,22 @@
 package hk.edu.polyu.comp.comp2021.jungle.model;
 
+/**
+ * display in cmd
+ */
 public class Displayer {
     private JungleGame game;
 
+    /**
+     *
+     * @param game the model , use for get information
+     */
     public Displayer(JungleGame game){
         this.game = game;
     }
 
+    /**
+     * display the board in cmd
+     */
     public void boardDisplay(){
         int[][] cb = game.getCb().getBoard();
         Piece[][] pb  = game.getCb().getPieceBoard();
@@ -40,6 +50,9 @@ public class Displayer {
         System.out.println();
     }
 
+    /**
+     * display the winner
+     */
     public void winnerDisplay(){
         System.out.print("the WINNER is :");
         System.out.print(game.getWinner().getName());
@@ -52,8 +65,10 @@ public class Displayer {
         System.out.print(msg);
     }
 
+    /**
+     * display turn in cmd
+     */
     public void turnMsgDisplay(){
         System.out.print("Now is "+ (game.getCurrentTurn() == 0?game.getPlayer(0).getName():game.getPlayer(1).getName())+ "'s turn:\n");
-
     }
 }

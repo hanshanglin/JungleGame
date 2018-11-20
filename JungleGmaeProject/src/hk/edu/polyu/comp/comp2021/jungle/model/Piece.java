@@ -69,7 +69,6 @@ public class Piece {
      * @throws Exception if move is invalid
      */
     public boolean checkMove(int x, int y,int[][] map,Piece[][] pieces)throws Exception{
-        /**check movement*/
         int nowX = this.getX();
         int nowY = this.getY();
         if(x==nowX && y == nowY) throw new Exception("the piece should move");

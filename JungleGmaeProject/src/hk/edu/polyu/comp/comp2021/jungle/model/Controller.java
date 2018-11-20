@@ -1,28 +1,30 @@
 package hk.edu.polyu.comp.comp2021.jungle.model;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
+/**
+ * control viewer and input and model
+ */
 public class Controller {
-    /**state 0: no game
-     * state 1: single pc game
-     * state 2: online pc game
-     Welcome to the JungleGame, you can choose following command:
-     NEW:	to create a new game
-     OPEN [path]:	to open a exist game
-     NEW
-     * */
+
     private int state = 0;
     private Scanner sc;
     private Displayer view;
     private JungleGame game;
 
+    /**
+     * construction
+     */
     public Controller(){
         this.sc = new Scanner(System.in);
     }
 
 
+    @NotNull
     private String getCommand(){
         return sc.nextLine().trim();
     }
@@ -31,6 +33,9 @@ public class Controller {
         return sc.nextLine();
     }
 
+    /**
+     * setup game , choose mode
+     */
     public void gameSetUp(){
         /*
           ask for game choice*/
@@ -49,6 +54,7 @@ public class Controller {
         }
         cmdParsing(getCommand());
     }
+
 
     private void singleGameSetUp(){
         Displayer.messageDisplay("NEW:\tto open a new game\n");
@@ -107,8 +113,8 @@ public class Controller {
     /**
      * save game
      *
-     * @param path
-     * @throws Exception
+     * @param path the save path
+     *
      */
     private void saveHandle(String path){
         /*
@@ -144,7 +150,7 @@ public class Controller {
     }
 
     /**
-     * @param path
+     * @param path the open file
      * @throws Exception if file not exists
      */
     private void openHandle(String path)throws Exception{
