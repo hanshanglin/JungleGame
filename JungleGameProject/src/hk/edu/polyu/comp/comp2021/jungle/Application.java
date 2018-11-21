@@ -18,12 +18,6 @@ public class Application {
 
         UIController.instance.setCurrentController(controller);
 
-        //test code
-        HybridScanner.instance.feed("standalone");
-        HybridScanner.instance.feed("new");
-        HybridScanner.instance.feed("Andrew Blah");
-        HybridScanner.instance.feed("Blah Andrew");
-
         controller.gameSetUp();
         // start playing the game
 

@@ -1,20 +1,69 @@
 package hk.edu.polyu.comp.comp2021.jungle.model;
 
-
 import hk.edu.polyu.comp.comp2021.jungle.controller.Controller;
+import hk.edu.polyu.comp.comp2021.jungle.view.GameUI;
 import hk.edu.polyu.comp.comp2021.jungle.view.UIController;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.ByteArrayInputStream;
-
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import java.lang.reflect.Field;
+import java.security.Permission;
 
 
 public class realGameTest {
-    @org.junit.Before
-    public void setUp() throws Exception {
+
+    private boolean Test_Should_Pass=true;
+    private boolean Test_Can_Exit=false;
+
+    @Before
+    public void setInfoPopupAvailability(){
+        try {
+            Class c = GameUI.class;
+            Field f = c.getDeclaredField("isTestCase");
+            f.setAccessible(true);
+            f.setBoolean(null,Test_Should_Pass);
+        }catch(Exception e){
+            e.printStackTrace();
+            assert false;
+        }
+    }
+
+    class SystemExitMonitor extends SecurityManager{
+        private boolean canExit;
+        private Thread attachedThread;
+        private SecurityManager oldman;
+        public SystemExitMonitor(boolean canExit){
+            this.canExit=canExit;
+            oldman=System.getSecurityManager();
+        }
+        @Override
+        public void checkPermission(Permission perm){}
+        @Override
+        public void checkExit(int status){
+            super.checkExit(status);
+            if(status==0&&!canExit){
+                (new Thread(()->{attachedThread.interrupt();Thread.currentThread().interrupt();})).start();
+                while(true);
+            }
+        }
+        public void resetSecurityManager(){System.setSecurityManager(oldman);}
+        public void attach(Thread thread){this.attachedThread=thread;}
+    }
+
+    @Before
+    public void setSystemExitAvailability(){
+        try{
+            System.setSecurityManager(new SystemExitMonitor(Test_Can_Exit));
+        }catch(Exception e){
+            e.printStackTrace();
+            assert false;
+        }
+    }
+
+    private SystemExitMonitor getExitBlocker(){return (SystemExitMonitor)System.getSecurityManager();}
+
+    @Before
+    public void setUp(){
         ByteArrayInputStream in = new ByteArrayInputStream(("standalone\n" +
                 "new\n" +
                 "leo\n" +
@@ -35,12 +84,23 @@ public class realGameTest {
         System.setIn(in);
     }
 
-    @Ignore
-    @Test//(timeout = 100)
+    @Test(timeout = 4000)
     public void testController(){
-        Controller controller = new Controller();
-        UIController.instance.setCurrentController(controller);
-        controller.gameSetUp();
+            Thread testThread=new Thread(()->{
+                Controller controller = new Controller();
+                UIController.instance.setCurrentController(controller);
+                controller.gameSetUp();
+            });
+            getExitBlocker().attach(testThread);
+            testThread.start();
+            while(!testThread.isInterrupted());
+
+            assert true;
+    }
+
+    @After
+    public void enableSystemExit(){
+        getExitBlocker().resetSecurityManager();
     }
 
 

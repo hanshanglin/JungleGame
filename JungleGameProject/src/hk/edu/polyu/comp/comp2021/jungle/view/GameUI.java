@@ -1,14 +1,25 @@
 package hk.edu.polyu.comp.comp2021.jungle.view;
 
-import hk.edu.polyu.comp.comp2021.jungle.controller.HybridScanner;
 import hk.edu.polyu.comp.comp2021.jungle.model.*;
+import hk.edu.polyu.comp.comp2021.jungle.controller.HybridScanner;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
+/**
+ *
+ * Main game UI.
+ * Handles board updates and mouse to cmd behaviors.
+ */
 public class GameUI extends JFrame{
 
-    //magic number zone
+    /**
+     *
+     * flag for test cases and code coverage trials.
+     * prevents info dialogs from displaying so that test cases won't be blocked
+     */
+    private static boolean isTestCase=false;
+
     private final int BoardRows=9;
     private final int BoardCols=7;
     private final int PawnSize=74;
@@ -26,7 +37,12 @@ public class GameUI extends JFrame{
 
     private String command;
 
-    public GameUI(){
+    /**
+     *
+     * constructor
+     * @param title title provided with player names, eg. "p1 vs p2"
+     */
+    public GameUI(String title){
 
         JLayeredPane boardpanel=new JLayeredPane();
 
@@ -60,7 +76,6 @@ public class GameUI extends JFrame{
 
 
         turnlabels=new JLabel[2];
-        //0:under
         turnlabels[0]=new JLabel();
         turnlabels[0].setPreferredSize(new Dimension(LabelWidth,LabelHeight));
         turnlabels[1]=new JLabel();
@@ -92,44 +107,67 @@ public class GameUI extends JFrame{
 
         this.setSize(BoardWidth,FrameHeight);
         this.setResizable(false);
+        this.setTitle(title);
         this.setVisible(true);
 
     }
 
+    /**
+     *
+     * update turn info. should only be triggered via UI events
+     * @param turn id of the turn
+     * @param p player of the current turn
+     */
     public void updateTurnInfo(int turn,Player p){
         turnlabels[turn].setText(p.getName()+"\'s turn");
         turnlabels[1-turn].setText("");
     }
 
+    /**
+     *
+     * update the board. should only be triggered via UI events
+     * @param checkerBoard the board of the current game
+     */
     public void updatePawns(CheckerBoard checkerBoard){
-        //if this is called then move is correct, clear cmd rejection message.
+
         this.rejectmsglabel.setText("");
 
         Piece[][] board=checkerBoard.getPieceBoard();
-        int[][] terrain=checkerBoard.getBoard();
 
         for(int i=0;i<BoardRows;i++)
-            for(int j=0;j<7;j++){
+            for(int j=0;j<7;j++)
                 if (board[i][j] == null)
                     pawns[8 - i][j].setIcon(null);
                 else
                     pawns[8 - i][j].setIcon(Textures.getIcon(board[i][j].toString()));
-                /*if(checkerBoard.isTrapDead(i,j)){
-                    pawns[8-i][j].setBackground(Color.white);
-                    pawns[8-i][j].setOpaque(true);
-                }*/
-            }
     }
 
+    /**
+     *
+     * set the move command invalid info
+     * @param msg description of the invalid move
+     */
     public void setCmdRejectedMsg(String msg){
         this.rejectmsglabel.setText(msg);
     }
 
+    /**
+     *
+     * display neutral message
+     * @param msg message
+     */
     public void showInfo(String msg){
+        if(isTestCase) return;
         JOptionPane.showMessageDialog(this, msg, "Information", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**
+     *
+     * display error message
+     * @param msg error message
+     */
     public void showError(String msg){
+        if(isTestCase) return;
         JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
@@ -159,9 +197,13 @@ public class GameUI extends JFrame{
             HybridScanner.instance.feed("SAVE "+filedlg.getSelectedFile().getPath());
     }
 
-    private void openFromFile(){
+    /**
+     *
+     * initiate open file dialog and show discard game confirmation.
+     */
+    protected void openFromFile(){
         JFileChooser filedlg=new JFileChooser();
-        filedlg.setDialogTitle("Save game snapshot");
+        filedlg.setDialogTitle("Load game snapshot");
         int result = filedlg.showOpenDialog(this);
 
         if (result == JFileChooser.APPROVE_OPTION) {
