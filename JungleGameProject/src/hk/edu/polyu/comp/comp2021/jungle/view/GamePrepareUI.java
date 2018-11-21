@@ -1,4 +1,4 @@
-package hk.edu.polyu.comp.comp2021.jungle.ui;
+package hk.edu.polyu.comp.comp2021.jungle.view;
 
 import javax.swing.*;
 
