@@ -43,7 +43,9 @@ public class Rat extends Piece{
             if(map[y][x] == -1){ // enemy in trap
                 return true;
             }
-            return pieces[y][x].getRank() >= rank || pieces[y][x].getRank() == 8;
+            if(pieces[y][x].getRank() > rank && pieces[y][x].getRank() != 8)
+                throw new Exception("the target's rank is higher") ;
+            return true;
         }
     }
 

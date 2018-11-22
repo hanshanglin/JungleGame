@@ -37,6 +37,8 @@ public class Elephant extends Piece {
             map[y][x] = 0;
             return true;
         }
-        return pieces[y][x].getRank() <= rank && pieces[y][x].getRank() != 1;
+        if(pieces[y][x].getRank() > rank || pieces[y][x].getRank() == 1)
+            throw new Exception("the target's rank is higher") ;
+        return true;
     }
 }

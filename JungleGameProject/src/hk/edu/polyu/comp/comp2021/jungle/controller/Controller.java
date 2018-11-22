@@ -34,7 +34,11 @@ public class Controller {
     
     @NotNull
     private String getCommand(){
-        return HybridScanner.instance.nextLine().trim();
+        String temp = HybridScanner.instance.nextLine().trim();
+        while(temp == null  || temp == ""){
+            HybridScanner.instance.nextLine().trim();
+        }
+        return temp;
     }
 
     private String getName(){

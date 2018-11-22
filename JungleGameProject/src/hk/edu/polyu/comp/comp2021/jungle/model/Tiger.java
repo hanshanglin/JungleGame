@@ -63,8 +63,7 @@ public class Tiger extends Piece {
             return true;
         }
 
-        if(y == (owner==0?0:8) && x==8)
-            throw new Exception("the piece can't move to your own den");
+        if(y == (owner==0?0:8) && x==3) throw new Exception("the piece can't move to your own den");
         if(map[y][x] == -10)
             throw new Exception("the piece can't move in that way"); // can't go into water
         if (pieces[y][x] == null)
@@ -73,7 +72,8 @@ public class Tiger extends Piece {
             throw new Exception("the piece can't attack friend");
         if(map[y][x] == -1) // enemy in trap
             return true;
-
-        return pieces[y][x].getRank() <= rank;
+        if(pieces[y][x].getRank() > rank)
+            throw new Exception("the target's rank is higher") ;
+        return true;
     }
 }

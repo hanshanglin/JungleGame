@@ -73,7 +73,7 @@ public class Piece {
         int nowY = this.getY();
         if(x==nowX && y == nowY) throw new Exception("the piece should move");
         if(Math.abs(x-nowX)+Math.abs(y-nowY) > 1) throw new Exception("the piece can't move in that way");
-        if(y == (owner==0?0:8) && x==8) throw new Exception("the piece can't move to your own den");
+        if(y == (owner==0?0:8) && x==3) throw new Exception("the piece can't move to your own den");
         if(map[y][x] == -10) throw new Exception("the piece can't move in that way"); // can't go into water
         if (pieces[y][x] == null)return true; // no enemy
         if (pieces[y][x].getOwner() == owner) throw new Exception("the piece can't attack friend");
@@ -81,7 +81,9 @@ public class Piece {
         if(map[y][x] == -1){ // enemy in trap
             return true;
         }
-        return pieces[y][x].getRank() <= rank;
+        if(pieces[y][x].getRank() > rank)
+            throw new Exception("the target's rank is higher") ;
+        return true;
     }
     
     @Override

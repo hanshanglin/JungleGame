@@ -67,7 +67,7 @@ public class AnimalTest {
         }
         catch (Exception e){throw e;}
     }
-    @Test
+    @Test(expected = Exception.class)
     public void test3()throws Exception{
         try {
             assertFalse(pb[1][0].checkMove(1,1,map,pb));
