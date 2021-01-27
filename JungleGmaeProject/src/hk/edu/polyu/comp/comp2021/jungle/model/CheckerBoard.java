@@ -1,24 +1,38 @@
 package hk.edu.polyu.comp.comp2021.jungle.model;
 
-
+/**
+ * record the information of board and piece position
+ */
 public class CheckerBoard {
     private int[][] board;
     private Piece[][] pieceBoard;
     private final static Piece NULLPIECE = null;
-    private int X;
-    private int Y;
 
-    public  CheckerBoard(){
-    }
-
+    /**
+     *
+     * @return the map(record terrain and trap)
+     */
     public int[][] getBoard() {
         return board;
     }
 
+    /**
+     *
+     * @return the pieceBoard(record position of piece)
+     */
     public Piece[][] getPieceBoard() {
         return pieceBoard;
     }
 
+    /**
+     *
+     * @param x1 the ori select col
+     * @param y1 the ori select row
+     * @param x2 the target col
+     * @param y2 the target row
+     * @return true if move is valid
+     * @throws Exception if move is invalid
+     */
     public boolean movePiece(int x1, int y1, int x2, int y2)throws Exception{
 
         /*if can't move return false
@@ -34,6 +48,9 @@ public class CheckerBoard {
         return true;
     }
 
+    /**
+     * init an ori map
+     */
     public void newBoard(){
         this.board = new int[][]{
                 {0,0,-1,-2,-1,0,0},
@@ -48,8 +65,10 @@ public class CheckerBoard {
         };
     }
 
-
-    public void newPieceBoard(){
+    /**
+     * init new piece board
+     */
+    public void originalPieceBoard(){
         /*set original PieceBoard
          */
         /*
@@ -61,7 +80,7 @@ public class CheckerBoard {
           3 Dog
           2 Cat
           1 Rat */
-        pieceBoard = new Piece[9][7];
+        newPieceBoard();
         Rat p1 = new Rat(0);
         Rat p2 = new Rat(1);
         Cat p3 = new Cat(0);
@@ -97,11 +116,21 @@ public class CheckerBoard {
         pieceBoard[p16.getY()][p16.getX()] = p16;
     }
 
-    public Piece[][] loadPieceBoard(){
+    /**
+     *
+     * @return pieceBoard without information
+     */
+    public Piece[][] newPieceBoard(){
         pieceBoard = new Piece[9][7];
         return pieceBoard;
     }
 
+    /**
+     *
+     * @param x1 the selected col
+     * @param y1 the selected row
+     * @return the selected piece
+     */
     public Piece getPiece(int x1, int y1){
         return pieceBoard[y1][x1];
     }

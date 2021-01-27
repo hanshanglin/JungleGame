@@ -24,6 +24,9 @@ public class JungleGame {
     private Player winner = null;
     // 0 for user 0, 1 for user 1
 
+    /**
+     * constructor
+     */
     public JungleGame(){
         currentTurn=0;
         this.cb = new CheckerBoard();
@@ -31,13 +34,20 @@ public class JungleGame {
         this.p1 = new Player(1);
     }
 
+    /**
+     * init new game
+     */
     public void newGame(){
         currentTurn = 0;
         cb.newBoard();
-        cb.newPieceBoard();
+        cb.originalPieceBoard();
         this.end = false;
     }
 
+    /**
+     * save game
+     * @param path save file path
+     */
     public void saveGame(String path){
         File file = new File(path);
         try{
@@ -87,6 +97,10 @@ public class JungleGame {
         }
     }
 
+    /**
+     * open a game
+     * @param f open file
+     */
     public void openGame(File f){
         try{
             FileReader fr = new FileReader(f);
@@ -106,7 +120,7 @@ public class JungleGame {
             if (token.nextToken().equals("0")) cb.getBoard()[8][2]=0;
             if (token.nextToken().equals("0")) cb.getBoard()[8][4]=0;
 
-            Piece[][] board = cb.loadPieceBoard();
+            Piece[][] board = cb.newPieceBoard();
             String line = null;
             while((line = br.readLine()) != null){
                 token = new StringTokenizer(line," ");
@@ -160,11 +174,24 @@ public class JungleGame {
 
     }
 
+    /**
+     *
+     * @return winner (if no winner, return null)
+     */
     @Nullable
     public Player getWinner() {
         return winner;
     }
 
+    /**
+     *
+     * @param x1 selected col
+     * @param y1 selected row
+     * @param x2 target col
+     * @param y2 target row
+     * @return true if move is valid
+     * @throws Exception if move is invalid
+     */
     public boolean move(int x1, int y1, int x2, int y2)throws Exception{
         if (cb.getPiece(x1,y1)==null){
             throw new Exception("piece not exits");
@@ -174,25 +201,34 @@ public class JungleGame {
         }
         try{
             cb.movePiece(x1, y1, x2, y2);
+            checkWinner();
             currentTurn = 1-currentTurn; //to next turn
         }
         catch (Exception e){
             throw e;
         }
-        finally {
-            checkWinner();
-        }
         return true;
     }
 
+    /**
+     *
+     * @return cb: record piece board information
+     */
     public CheckerBoard getCb(){
         return cb;
     }
 
+    /**
+     *
+     * @return current turn
+     */
     public int getCurrentTurn(){
         return currentTurn;
     }
 
+    /**
+     * check is there a winner
+     */
     private void checkWinner(){
         if(cb.getPiece(3,0)!=null && cb.getPiece(3,0).getOwner()!=1){
             end = true;
@@ -204,11 +240,20 @@ public class JungleGame {
         }
     }
 
+    /**
+     *
+     * @param id for player
+     * @return the player
+     */
     public Player getPlayer(int id){
         if (id==0) return p0;
         else return p1;
     }
 
+    /**
+     *
+     * @return is the game end or not
+     */
     public boolean isEnd(){
         return end;
     }

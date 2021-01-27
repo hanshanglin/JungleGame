@@ -1,42 +1,53 @@
 package hk.edu.polyu.comp.comp2021.jungle.model;
 
+import org.jetbrains.annotations.NotNull;
+
+import hk.edu.polyu.comp.comp2021.jungle.ui.UIController;
+import hk.edu.polyu.comp.comp2021.jungle.ui.UIEvent;
+
 import java.io.File;
-import java.util.Scanner;
 import java.util.StringTokenizer;
 
+/**
+ * control viewer and input and model
+ */
 public class Controller {
-    /**state 0: no game
-     * state 1: single pc game
-     * state 2: online pc game
-     Welcome to the JungleGame, you can choose following command:
-     NEW:	to create a new game
-     OPEN [path]:	to open a exist game
-     NEW
-     * */
+
     private int state = 0;
-    private Scanner sc;
     private Displayer view;
     private JungleGame game;
 
-    public Controller(){
-        this.sc = new Scanner(System.in);
-    }
-
-
+    /**
+     *  get the checker board for current game
+     * @return the checker board
+     */
+    public CheckerBoard getCheckerBoard(){return game.getCheckerBoard();}
+    
+    /**
+     *  get the current game
+     * @return the game
+     */
+    public JungleGame getGame(){return this.game;}
+    
+    @NotNull
     private String getCommand(){
-        return sc.nextLine().trim();
+        return HybridScanner.instance.nextLine().trim();
     }
 
     private String getName(){
-        return sc.nextLine();
+        return HybridScanner.instance.nextLine();
     }
 
+    /**
+     * setup game , choose mode
+     */
     public void gameSetUp(){
         /*
           ask for game choice*/
         Displayer.messageDisplay("Welcome to the JungleGame, you can choose following command:\n");
         Displayer.messageDisplay("STANDALONE:\tplay the game on this PC\n");
-        Displayer.messageDisplay("ONLINE:\tplay the game on two PC\n");
+        //Displayer.messageDisplay("ONLINE:\tplay the game on two PC\n");
+        UIController.instance.sendEvent(UIEvent.GAME_MODE_SELECT);
         while(state == 0){
             cmdParsing(getCommand());
         }
@@ -50,7 +61,9 @@ public class Controller {
         cmdParsing(getCommand());
     }
 
+
     private void singleGameSetUp(){
+        UIController.instance.sendEvent(UIEvent.GAME_SINGLE_PLAYER);
         Displayer.messageDisplay("NEW:\tto open a new game\n");
         Displayer.messageDisplay("OPEN [path]:\tto open a exist game\n");
         cmdParsing(getCommand());
@@ -65,6 +78,7 @@ public class Controller {
     public void doRound(){
         while(!game.isEnd() && state!=0){
             view.turnMsgDisplay();
+            UIController.instance.sendEvent(UIEvent.GAME_SWAP_TURN);
             cmdParsing(getCommand());
             view.boardDisplay();
         }
@@ -84,10 +98,10 @@ public class Controller {
                 state = 1;
                 return;
             }
-            if (temp.toUpperCase().equals("ONLINE")){
+            /*if (temp.toUpperCase().equals("ONLINE")){
                 state = 2;
                 return;
-            }
+            }*/
             Displayer.messageDisplay("please enter STANDALONE or ONLINE to select game mode.\n");
             return;
         }
@@ -99,16 +113,20 @@ public class Controller {
                 else if (temp.toUpperCase().equals("SAVE")) saveHandle(token.nextToken());
                 else if (temp.toUpperCase().equals("MOVE"))
                     moveHandle(token.nextToken().toUpperCase(),token.nextToken().toUpperCase());
+                else cmdParsing(getCommand());
             }
         }
-        catch (Exception e) {cmdParsing(getCommand());}
+        catch (Exception e) {
+            UIController.instance.sendEvent(UIEvent.UI_ERROR_REPORT,e.getMessage());
+            cmdParsing(getCommand());
+        }
     }
 
     /**
      * save game
      *
-     * @param path
-     * @throws Exception
+     * @param path the save path
+     *
      */
     private void saveHandle(String path){
         /*
@@ -116,6 +134,7 @@ public class Controller {
           if exist, call save function
           */
         game.saveGame(path);
+        UIController.instance.sendEvent(UIEvent.UI_INFO,"Game saved to "+path);
     }
 
     /**
@@ -123,7 +142,7 @@ public class Controller {
      */
     private void createHandle(){
         if(state!=0 && game!=null){
-            Displayer.messageDisplay("A game is existing now, please save it first, if you do not want to save, please input \"Y\"\n");
+            Displayer.messageDisplay("A game is existing now,please ensure you have save the game or you will lose the game,if you are sure to have a new game please input \"Y\"\n");
             if(!getCommand().equals("Y")){
                 Displayer.messageDisplay("You give up to create new game, now you can back to game\n");
                 return;
@@ -140,16 +159,17 @@ public class Controller {
         game.getPlayer(1).setName(getName());
 
         view.boardDisplay();
+        UIController.instance.sendEvent(UIEvent.GAME_INITIATED);
         doRound();
     }
 
     /**
-     * @param path
+     * @param path the open file
      * @throws Exception if file not exists
      */
     private void openHandle(String path)throws Exception{
         if(state!=0 && game!=null){
-            Displayer.messageDisplay("A game is existing now, please save it first, if you do not want to save, please input \"Y\"\n");
+            Displayer.messageDisplay("A game is existing now,please ensure you have save the game or you will lose the game,if you are sure to have a new game please input \"Y\"\n");
             if(!getCommand().equals("Y")){
                 Displayer.messageDisplay("You give up to create new game, now you can back to game\n");
                 return;
@@ -163,6 +183,7 @@ public class Controller {
         this.view = new Displayer(game);
         game.openGame(file);
         view.boardDisplay();
+        UIController.instance.sendEvent(UIEvent.GAME_INITIATED);
         doRound();
     }
 
@@ -187,9 +208,11 @@ public class Controller {
         }
         try{
             game.move(x,y,newX,newY);
+            UIController.instance.sendEvent(UIEvent.UI_BOARD_UPDATE);
         }
         catch (Exception e){
             Displayer.messageDisplay(e.getMessage());
+            UIController.instance.sendEvent(UIEvent.UI_COMMAND_REJECTED,e.getMessage());
         }
         return true;
     }
